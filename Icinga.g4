@@ -1,138 +1,143 @@
 /**
  * Define a grammar called Hello
  */
- grammar Icinga;
+grammar Icinga;
 
- @header {
+@header {
     package com.zycus.antlr.icinga;
 }
- icingaObj
- :
- 	OBJECT
- 	| TEMPLATE objType STRING obj
- ;
 
- objType
- :
- 	(
- 		'Service'
- 		| 'Host'
- 		| 'Notification'
- 		| 'User'
- 		| 'CheckCommand'
- 		| 'Zone'
- 	)
- ;
+icingaObj
+:
+	'object' objType STRING obj
+;
 
- obj
- :
- 	'{'
- 	(
- 		'import' STRING
- 	)* pair* '}'
- ;
+objType
+:
+	(
+		'Service'
+		| 'Host'
+		| 'Notification'
+		| 'User'
+		| 'CheckCommand'
+		| 'Zone'
+	)
+;
 
- pair
- :
- 	VAR '=' value
- ;
+// str
+// : STRING;
 
- array
- :
- 	'[' value
- 	(
- 		',' value
- 	)* ']'
- 	| '[' ']'
- ;
+obj
+:
+	'{'
+	(
+		'import' STRING
+	)* pair* '}'
+;
 
- value
- :
- 	STRING
- 	| NUMBER
- 	| obj
- 	| array
- 	| 'true'
- 	| 'false'
- 	| 'null'
- ;
+pair
+:
+	var '='
+	(
+		TEXT
+		| value
+	)
+;
 
- ICINGA_OBJ_TYPE
- :
- 	'Service'
- 	| 'Host'
- 	| 'Notification'
- 	| 'User'
- 	| 'CheckCommand'
- 	| 'Zone'
- ;
+array
+:
+	'[' value
+	(
+		',' value
+	)* ']'
+	| '[' ']'
+;
 
- OBJECT
- :
- 	'object'
- ;
+var
+:
+	TEXT
+;
 
- TEMPLATE
- :
- 	'template'
- ;
+value
+:
+	STRING
+	| NUMBER
+	| obj
+	| array
+	| 'true'
+	| 'false'
+	| 'null'
+;
 
+ICINGA_OBJ_TYPE
+:
+	'Service'
+	| 'Host'
+	| 'Notification'
+	| 'User'
+	| 'CheckCommand'
+	| 'Zone'
+;
 
- APPLY
- :
- 	'apply'
- ;
+OBJECT
+:
+	'object'
+;
 
- VAR
- :
- 	TEXT
- ;
+TEMPLATE
+:
+	'template'
+;
 
- // Anything that is not an escape. Need to revisit this
+APPLY
+:
+	'apply'
+;
 
- STRING
- :
- 	'"'
- 	(
- 		~["\\]
- 	)* '"'
- 	| '""'
- ;
+// Anything that is not an escape. Need to revisit this
 
- TEXT
- :
- 	[0-9a-zA-Z_\-""\.]+
- 	| NUMBER
- ;
- //LSQBRACE: '[';
- //RSQBRACE: ']';
- //LCURLYBRACE: '{';
- //RCURLYBRACE: '}';
- WS
- :
- 	[ \t\n\r]+ -> skip
- ;
+TEXT
+:
+	[0-9a-zA-Z_\-\.]+
+	| NUMBER
+;
+//LSQBRACE: '[';
+//RSQBRACE: ']';
+//LCURLYBRACE: '{';
+//RCURLYBRACE: '}';
 
- NUMBER
- :
- 	'-'? INT '.' [0-9]+
- 	| '-'? INT
- 	| '-'? INT
- ;
+WS
+:
+	[ \t\n\r\u000C]+ -> skip
+;
 
- fragment
- INT
- :
- 	'0'
- 	| [1-9] [0-9]*
- ;
+NUMBER
+:
+	'-'? INT '.' [0-9]+
+	| '-'? INT
+	| '-'? INT
+;
 
- COMMENT
- :
- 	'//' -> skip
- ;
+fragment
+INT
+:
+	'0'
+	| [1-9] [0-9]*
+;
 
- BLOCKCOMMENT
- :
- 	'/*' .*? '*/' -> skip
- ;
+COMMENT
+:
+	'//' -> skip
+;
+
+BLOCKCOMMENT
+:
+	'/*' .*? '*/' -> skip
+;
+
+STRING
+:
+	'"' .*? '"'
+;
+
+ 
