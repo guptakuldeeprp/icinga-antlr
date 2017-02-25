@@ -9,7 +9,13 @@ grammar Icinga;
 
 icingaObj
 :
-	'object' objType STRING obj
+	cfgType objType STRING obj
+;
+
+cfgType
+:
+	OBJECT
+	| TEMPLATE
 ;
 
 objType
